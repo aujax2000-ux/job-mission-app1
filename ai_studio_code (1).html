@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Mission App</title>
+    <style>
+        :root {
+            --primary: #0038b8;
+            --gold: #D4AF37;
+            --bg: #f0f2f5;
+            --dark: #2c3e50;
+            --white: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
+        
+        header { 
+            background: linear-gradient(135deg, var(--primary), var(--dark)); 
+            color: white; padding: 20px; text-align: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Stats Bar */
+        #stats-bar { 
+            display: flex; justify-content: space-around; 
+            background: white; padding: 15px; margin: 10px;
+            border-radius: 10px; font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Pages */
+        .page { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Dashboard Menu */
+        .menu-grid { display: grid; gap: 15px; }
+        .btn-main { 
+            padding: 20px; border: none; border-radius: 12px; 
+            background: white; font-size: 18px; font-weight: bold; 
+            color: var(--dark); box-shadow: 0 3px 6px rgba(0,0,0,0.1); 
+            cursor: pointer; text-align: left; display: flex; justify-content: space-between;
+        }
+        .btn-main:active { transform: scale(0.98); }
+        .icon { font-size: 22px; margin-right: 10px; }
+
+        /* News Section Styles */
+        .news-tabs { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px; }
+        .tab-btn { 
+            flex: 1; padding: 10px; border: none; background: #ddd; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; white-space: nowrap;
+        }
+        .tab-btn.active-tab { background: var(--primary); color: white; }
+        
+        .news-list { list-style: none; padding: 0; }
+        .news-item { 
+            background: white; padding: 15px; margin-bottom: 10px; 
+            border-left: 5px solid var(--gold); border-radius: 5px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .news-date { font-size: 12px; color: #888; display: block; margin-bottom: 5px; }
+
+        /* Common Elements */
+        .back { border: none; background: none; color: var(--primary); font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin-top: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .action-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <h1>🌏 Job Mission Center</h1>
+        <p>News & Training App</p>
+    </header>
+
+    <div id="stats-bar">
+        <div>Day: <span id="dayCount">1</span></div>
+        <div>Fluency: <span id="score">0%</span></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <main id="dashboard" class="page active">
+        <div class="menu-grid">
+            <button onclick="showPage('news')" class="btn-main">
+                <span>📰 Global Job News</span> <span>→</span>
+            </button>
+            <button onclick="showPage('sentence')" class="btn-main">
+                <span>✍️ Sentence Practice</span> <span>→</span>
+            </button>
+            <button onclick="showPage('vocab')" class="btn-main">
+                <span>🧠 Vocabulary (Words)</span> <span>→</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- NEWS SECTION -->
+    <section id="news" class="page">
+        <button class="back" onclick="showPage('dashboard')">← Back to Menu</button>
+        <h2>Latest Important News</h2>
+        
+        <!-- Region Tabs -->
+        <div class="news-tabs">
+            <button onclick="loadNews('dubai')" id="tab-dubai" class="tab-btn active-tab">Dubai</button>
+            <button onclick="loadNews('israel')" id="tab-israel" class="tab-btn">Israel</button>
+            <button onclick="loadNews('india')" id="tab-india" class="tab-btn">India</button>
+            <button onclick="loadNews('wb')" id="tab-wb" class="tab-btn">W. Bengal</button>
+        </div>
+
+        <div id="news-container">
+            <!-- News will load here -->
+        </div>
+    </section>
+
+    <!-- SENTENCE SECTION -->
+    <section id="sentence" class="page">
+        <button class="back" onclick="showPage('dashboard')">← Back to Menu</button>
+        <h2>Sentence Builder</h2>
+        <div class="card">
+            <p><b>Translate this for Interview:</b></p>
+            <h3 id="qText" style="color:var(--primary)">"Main overtime karne ke liye taiyaar hoon."</h3>
+            <input type="text" id="ansInput" placeholder="Type English here...">
+            <button onclick="checkSentence()" class="action-btn">Check Answer</button>
+            <p id="resultMsg" style="margin-top:10px; font-weight:bold;"></p>
+        </div>
+    </section>
+
+    <!-- VOCAB SECTION (Simple) -->
+    <section id="vocab" class="page">
+        <button class="back" onclick="showPage('dashboard')">← Back</button>
+        <h2>Word Power</h2>
+        <div class="card" style="text-align:center;">
+            <h1>👷‍♂️</h1>
+            <h3>Vacancy</h3>
+            <p>Meaning: Khali jagah (Job Opening)</p>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // --- STATE MANAGEMENT ---
+    let fluency = 0;
+
+    // --- NEWS DATA (Simulated Real-Time) ---
+    const newsDatabase = {
+        dubai: [
+            "Dubai Visa Update: New work permit rules for construction workers announced today.",
+            "High Demand: 5000 new jobs opening in Dubai Mall expansion project.",
+            "Salary News: Minimum wage discussions for expat workers in UAE.",
+            "Transport: New bus routes added for labor camps to city center.",
+            "Weather Alert: High heat warning for outdoor workers this week.",
+            "Safety: Strict fines for not wearing helmets on sites.",
+            "Medical: Free health checkup camps in Al Quoz industrial area.",
+            "Flights: Air India announces more flights from India to Dubai.",
+            "Job Fair: Mega recruitment drive in Deira next Sunday.",
+            "Housing: Rents stabilizing in worker accommodation areas."
+        ],
+        israel: [
+            "Construction Boom: Israel needs 10,000 more skilled workers immediately.",
+            "Agreement: India-Israel G2G path opens for caregivers and carpenters.",
+            "Safety Alert: New safety bunkers mandatory near northern construction sites.",
+            "Salary: Shekel value rises, sending money home becomes profitable.",
+            "Language: Basic Hebrew test now mandatory for new Visa extensions.",
+            "Agriculture: Farm worker shortage in Southern Israel.",
+            "Flights: Direct flights from Delhi to Tel Aviv resumed.",
+            "Medical: Health insurance cards issued to all foreign workers.",
+            "Housing: New prefab housing units arriving for foreign staff.",
+            "Visa: Processing time reduced to 30 days for Indian applicants."
+        ],
+        india: [
+            "NSDC Update: Skill India launches new training for overseas aspirants.",
+            "Passport Seva: Fast-track police verification launched for Tatkal.",
+            "Fraud Alert: Govt warns against fake agents promising Europe visas.",
+            "Flight Deals: Indigo offers discounts on Middle-East routes.",
+            "Economy: Rupee exchange rate changes against Dollar/Dirham.",
+            "Training: Free English coaching centers opening in 5 metro cities.",
+            "Medical: Pre-departure medical checkups made digital.",
+            "Labour Ministry: E-Migrate portal updated for easier registration.",
+            "Airport: New immigration counters at Delhi T3 for workers.",
+            "Success Story: 2000 Indians reached Israel safely this month."
+        ],
+        wb: [
+            "Kolkata: Recruitment drive for Dubai held in Salt Lake today.",
+            "Siliguri: Skill development center opens for construction training.",
+            "Transport: New train announced from Howrah to Mumbai (Job route).",
+            "Scam Alert: Fake agent arrested in Murshidabad for visa fraud.",
+            "Govt Scheme: WB Govt offers loan for youth going abroad.",
+            "Passport: Regional Passport Office Kolkata extends working hours.",
+            "Training: Bengali to English crash course launched in districts.",
+            "Medical: Approved medical centers list updated in Kolkata.",
+            "Support: Helpline number launched for WB workers in Gulf.",
+            "Airport: Bagdogra to Delhi flights increased for connecting workers."
+        ]
+    };
+
+    // --- FUNCTIONS ---
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if(pageId === 'news') loadNews('dubai'); // Default load
+    }
+
+    function loadNews(region) {
+        // 1. Highlight Tab
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+        document.getElementById('tab-' + region).classList.add('active-tab');
+
+        // 2. Load Data
+        const listContainer = document.getElementById('news-container');
+        listContainer.innerHTML = ""; // Clear old
+        
+        const stories = newsDatabase[region];
+        const ul = document.createElement('ul');
+        ul.className = "news-list";
+
+        stories.forEach((story) => {
+            const li = document.createElement('li');
+            li.className = "news-item";
+            // Fake date generator for "Real Time" feel
+            const today = new Date().toLocaleDateString();
+            li.innerHTML = `<span class="news-date">📅 ${today} • Important</span>${story}`;
+            ul.appendChild(li);
+        });
+
+        listContainer.appendChild(ul);
+    }
+
+    // Sentence Practice Logic
+    function checkSentence() {
+        const input = document.getElementById('ansInput').value.toLowerCase();
+        const msg = document.getElementById('resultMsg');
+        
+        // Simple check for keyword "overtime" and "ready/willing"
+        if(input.includes("overtime") && (input.includes("ready") || input.includes("willing"))) {
+            msg.innerText = "✅ Perfect! Correct Answer.";
+            msg.style.color = "green";
+            fluency += 10;
+            document.getElementById('score').innerText = fluency + "%";
+        } else {
+            msg.innerText = "❌ Try again. Use 'I am ready' and 'overtime'.";
+            msg.style.color = "red";
+        }
+    }
+</script>
+
+</body>
+</html>
